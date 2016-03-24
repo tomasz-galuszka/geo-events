@@ -9,6 +9,7 @@ app.get('/', function (req, res) {
 io.on('connection', function (socket) {
 
     socket.on('nickname', function (nickname) {
+        console.log(nickname);
         socket.emit('nickname_ok', nickname);
         socket.emit('chat_message', 'Welcome ' + nickname + " !");
     });
@@ -17,6 +18,9 @@ io.on('connection', function (socket) {
         io.emit('chat_message', msg);
     });
 });
-http.listen(3000, function () {
-    console.log('listening on *:3000');
+
+console.log(process.env.PORT);
+console.log(process.env.IP);
+http.listen(process.env.PORT, process.env.IP, function() {
+    console.log('Running');
 });

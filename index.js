@@ -1,26 +1,41 @@
-var app = require('express')();
+var express = require('express');
+var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
+app.use(express.static('public'));
+
 app.get('/', function (req, res) {
-    res.sendFile(__dirname + '/index.html');
+    res.sendFile('index.html');
 });
+
+function getRandomInRange(from, to, fixed) {
+    return (Math.random() * (to - from) + from).toFixed(fixed) * 1;
+}
 
 io.on('connection', function (socket) {
 
-    socket.on('nickname', function (nickname) {
-        console.log(nickname);
-        socket.emit('nickname_ok', nickname);
-        socket.emit('chat_message', 'Welcome ' + nickname + " !");
-    });
-
-    socket.on('chat_message', function (msg) {
-        io.emit('chat_message', msg);
-    });
+setInterval(function() {
+  io.emit('map:points', [{
+    location: [getRandomInRange(65, 60, 3), getRandomInRange(-180, 180, 3)],
+    name: "<b>Manchester</b><br/>EUR 142.20 ",
+    id: new Date().getTime() + 1
+  }, {
+    location: [getRandomInRange(65, 60, 3), getRandomInRange(-180, 180, 3)],
+    name: "<b>Manchester</b><br/>PLN 142.20 ",
+    id: new Date().getTime() + 2
+  }, {
+    location: [getRandomInRange(65, 60, 3), getRandomInRange(-180, 180, 3)],
+    name: "<b>Manchester</b><br/>USD 142.20 ",
+    id: new Date().getTime() + 3
+  }, {
+    location: [getRandomInRange(65, 6, 3), getRandomInRange(-180, 180, 3)],
+    name: "<b>Manchester</b><br/>GBP 142.20 ",
+    id: new Date().getTime() + 4
+  }]);
+}, 5000);
 });
 
-console.log(process.env.PORT);
-console.log(process.env.IP);
-http.listen(process.env.PORT, process.env.IP, function() {
-    console.log('Running');
+http.listen(8080, 'localhost', function() {
+    console.log('Running ...');
 });
